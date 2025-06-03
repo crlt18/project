@@ -1,26 +1,43 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerInput : MonoBehaviour
 {
-    public InputActionAsset controls;   //the actions asset
 
-    private InputAction clickAction;    //the click action
+    [SerializeField] private float playerSpeed;
+    private float currentSpeed;
+    [SerializeField] private float jumpForce;
+    private Rigidbody2D rb;
 
-    private void OnEnable()
-    {
-        controls.FindActionMap("Player").Enable();  //the player action map within the 'controls' asset     
-    }
-    private void OnDisable()
-    {
-        controls.FindActionMap("Player").Disable();  //the player action map within the 'controls' asset     
-    }
+
 
     private void Awake()
     {
-        clickAction = controls.FindActionMap("Player").FindAction("Click");
+        rb = GetComponent<Rigidbody2D>();
     }
 
+    private void FixedUpdate()
+    {
+        if (Input.GetKey(KeyCode.A))
+        {
+            rb.linearVelocity = new Vector2(-playerSpeed, rb.linearVelocity.y);
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            rb.linearVelocity = new Vector2(playerSpeed, rb.linearVelocity.y);
+        }
+
+        if (Input.GetKey(KeyCode.Space))
+        {
+            rb.linearVelocity = new Vector2(currentSpeed, jumpForce);
+        }
+    }
+
+    private void Update()
+    {
+        currentSpeed = rb.linearVelocityX;
+    }
 
 }
 
