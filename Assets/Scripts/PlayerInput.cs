@@ -94,11 +94,11 @@ public class PlayerInput : MonoBehaviour
         Vector3 localScale = transform.localScale;
         if (currentSpeed < -deadZone)
         {
-            localScale.x = -Mathf.Abs(localScale.x);
+            localScale.x = Mathf.Abs(localScale.x);
         }
         else if (currentSpeed > deadZone) 
         {
-            localScale.x = Mathf.Abs(localScale.x);
+            localScale.x = -Mathf.Abs(localScale.x);
         }
         transform.localScale = localScale;
     }
