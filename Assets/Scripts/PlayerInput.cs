@@ -10,16 +10,33 @@ public class PlayerInput : MonoBehaviour
     private float currentSpeed;
     [SerializeField] private float jumpForce;
     private Rigidbody2D rb;
-    float deadZone = 0.05f; //prevent flickering (player changing direction for a frame when coming to a stop)
+    private float deadZone = 0.05f; //prevent flickering (player changing direction for a frame when coming to a stop)
+
+    private CapsuleCollider2D capsuleCollider;
+    private Vector2 standingSize;
+    private Vector2 crouchingSize;
+    private Vector2 standingOffset;
+    private Vector2 crouchingOffset;
+
+    [SerializeField] private Transform groundCheckPoint;
+    [SerializeField] private float groundCheckRadius = 0.2f;
+    [SerializeField] private LayerMask groundLayer;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        capsuleCollider = GetComponent<CapsuleCollider2D>();
+        standingSize = capsuleCollider.size;
+        standingOffset = capsuleCollider.offset;
+
+        crouchingSize = new Vector2(standingSize.x, standingSize.y / 2f);
+        crouchingOffset = new Vector2(standingOffset.x, standingOffset.y - standingSize.y / 4f);
         playerSpeed = originalSpeed;
     }
 
     private void FixedUpdate()
     {
+        //movement
         if (Input.GetKey(KeyCode.A))
         {
             rb.linearVelocity = new Vector2(-playerSpeed, rb.linearVelocity.y);
@@ -36,11 +53,16 @@ public class PlayerInput : MonoBehaviour
             rb.linearVelocity = new Vector2(newVelX, rb.linearVelocity.y);
         }
 
+        //jump
         if (Input.GetKey(KeyCode.Space))
         {
-            rb.linearVelocity = new Vector2(currentSpeed, jumpForce);
+            if (IsGrounded())
+            {
+                rb.linearVelocity = new Vector2(currentSpeed, jumpForce);
+            }
         }
 
+        //sprint
         if (Input.GetKey(KeyCode.LeftShift))
         {
             playerSpeed = originalSpeed * 1.3f;
@@ -49,6 +71,19 @@ public class PlayerInput : MonoBehaviour
         {
             playerSpeed = originalSpeed;
         }
+
+        //crouch
+        if (Input.GetKey(KeyCode.S) && IsGrounded())
+        {
+            capsuleCollider.size = crouchingSize;
+            capsuleCollider.offset = crouchingOffset;
+        }
+        else
+        {
+            capsuleCollider.size = standingSize;
+            capsuleCollider.offset = standingOffset;
+        }
+
     }
 
     private void Update()
@@ -66,6 +101,11 @@ public class PlayerInput : MonoBehaviour
             localScale.x = Mathf.Abs(localScale.x);
         }
         transform.localScale = localScale;
+    }
+
+    private bool IsGrounded()
+    {
+        return Physics2D.OverlapCircle(groundCheckPoint.position, groundCheckRadius, groundLayer);
     }
 
 }
