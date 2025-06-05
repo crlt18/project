@@ -21,11 +21,13 @@ public class PlayerInput : MonoBehaviour
     [SerializeField] private Transform groundCheckPoint;
     [SerializeField] private float groundCheckRadius = 0.2f;
     [SerializeField] private LayerMask groundLayer;
+    private Animator animator;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
+        animator = GetComponent<Animator>();
         standingSize = capsuleCollider.size;
         standingOffset = capsuleCollider.offset;
 
@@ -101,6 +103,7 @@ public class PlayerInput : MonoBehaviour
             localScale.x = -Mathf.Abs(localScale.x);
         }
         transform.localScale = localScale;
+        animator.speed = currentSpeed;
     }
 
     private bool IsGrounded()
