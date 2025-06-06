@@ -91,7 +91,6 @@ public class PlayerInput : MonoBehaviour
     private void Update()
     {
         currentSpeed = rb.linearVelocityX;
-
         //logic to flip the player sprite depending on direction
         Vector3 localScale = transform.localScale;
         if (currentSpeed < -deadZone)
@@ -103,7 +102,8 @@ public class PlayerInput : MonoBehaviour
             localScale.x = -Mathf.Abs(localScale.x);
         }
         transform.localScale = localScale;
-        animator.speed = currentSpeed;
+        animator.SetFloat("speed", Mathf.Abs(currentSpeed));
+        animator.SetBool("grounded", IsGrounded());
     }
 
     private bool IsGrounded()
