@@ -27,6 +27,7 @@ public class PlayerInput : MonoBehaviour
     [SerializeField] private float slopeCheckDistance;
     private float slopeDownAngle;
     private float slopeDownAngleOld;
+    private float slopeSideAngle;
     private Vector2 slopeNormalPerp;
     private bool isOnSlope;
 
@@ -120,7 +121,7 @@ public class PlayerInput : MonoBehaviour
 
         if (IsGrounded() && isOnSlope)
         {
-            rb.linearVelocity = new Vector2(-playerSpeed * slopeNormalPerp.x, -playerSpeed * slopeNormalPerp.y);
+            rb.linearVelocity = new Vector2(-playerSpeed * slopeNormalPerp.x , -playerSpeed * slopeNormalPerp.y);
         }
         else
         {
@@ -139,11 +140,29 @@ public class PlayerInput : MonoBehaviour
         Vector2 checkPos = groundCheckPoint.position;
 
         SlopeCheckVertical(checkPos);
+        SlopeCheckHorizontal(checkPos);
     }
 
     private void SlopeCheckHorizontal(Vector2 checkPos)
     {
+        RaycastHit2D slopeHitFront = Physics2D.Raycast(checkPos, transform.right, slopeCheckDistance, groundLayer);
+        RaycastHit2D slopeHitBack = Physics2D.Raycast(checkPos, -transform.right, slopeCheckDistance, groundLayer);
 
+        if(slopeHitFront)
+        {
+            isOnSlope = true;
+            slopeSideAngle = Vector2.Angle(slopeHitFront.normal, Vector2.up);
+        }
+        else if (slopeHitBack)
+        {
+            isOnSlope = true;
+            slopeSideAngle = Vector2.Angle(slopeHitFront.normal, Vector2.up);
+        }
+        else
+        {
+            slopeSideAngle = 0.0f;
+            isOnSlope= false;
+        }
     }
 
     private void SlopeCheckVertical(Vector2 checkPos)
