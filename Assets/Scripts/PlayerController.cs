@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 
-public class PlayerInput : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
 
     private float playerSpeed;
