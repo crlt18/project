@@ -23,6 +23,8 @@ public class PlayerInput : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     private Animator animator;
 
+    [SerializeField] private float slopeCheckDistance;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -86,6 +88,8 @@ public class PlayerInput : MonoBehaviour
             capsuleCollider.offset = standingOffset;
         }
 
+        SlopeCheck();
+
     }
 
     private void Update()
@@ -109,6 +113,29 @@ public class PlayerInput : MonoBehaviour
     private bool IsGrounded()
     {
         return Physics2D.OverlapCircle(groundCheckPoint.position, groundCheckRadius, groundLayer);
+    }
+
+    private void SlopeCheck()
+    {
+        Vector2 checkPos = groundCheckPoint.position;
+
+        SlopeCheckVertical(checkPos);
+    }
+
+    private void SlopeCheckHorizontal(Vector2 checkPos)
+    {
+
+    }
+
+    private void SlopeCheckVertical(Vector2 checkPos)
+    {
+        RaycastHit2D hit = Physics2D.Raycast(checkPos, Vector2.down, slopeCheckDistance, groundLayer);
+
+        if (hit)
+        {
+            Debug.DrawRay(hit.point, hit.normal, Color.red);
+            Debug.Log("hit");
+        }
     }
 
 }
