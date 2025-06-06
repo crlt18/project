@@ -409,8 +409,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 043547c4575266644a6c85268f01889d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  originalSpeed: 5
-  jumpForce: 5
+  originalSpeed: 8
+  jumpForce: 20
   groundCheckPoint: {fileID: 880782870}
   groundCheckRadius: 0.1
   groundLayer:
@@ -432,7 +432,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 9
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -454,7 +454,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 58d568c59bc56304db36edb3cdd8f4d6, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

@@ -1,6 +1,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 public class PlayerInput : MonoBehaviour
 {
@@ -24,6 +25,10 @@ public class PlayerInput : MonoBehaviour
     private Animator animator;
 
     [SerializeField] private float slopeCheckDistance;
+    private float slopeDownAngle;
+    private float slopeDownAngleOld;
+    private Vector2 slopeNormalPerp;
+    private bool isOnSlope;
 
     private void Awake()
     {
@@ -43,11 +48,11 @@ public class PlayerInput : MonoBehaviour
         //movement
         if (Input.GetKey(KeyCode.A))
         {
-            rb.linearVelocity = new Vector2(-playerSpeed, rb.linearVelocity.y);
+            MovePlayer(-playerSpeed);
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            rb.linearVelocity = new Vector2(playerSpeed, rb.linearVelocity.y);
+            MovePlayer(playerSpeed);
         }
         else
         {
@@ -110,6 +115,20 @@ public class PlayerInput : MonoBehaviour
         animator.SetBool("grounded", IsGrounded());
     }
 
+    private void MovePlayer(float playerSpeed)
+    {
+
+        if (IsGrounded() && isOnSlope)
+        {
+            rb.linearVelocity = new Vector2(-playerSpeed * slopeNormalPerp.x, -playerSpeed * slopeNormalPerp.y);
+        }
+        else
+        {
+            rb.linearVelocity = new Vector2(playerSpeed, rb.linearVelocity.y);
+        }  
+        
+    }
+
     private bool IsGrounded()
     {
         return Physics2D.OverlapCircle(groundCheckPoint.position, groundCheckRadius, groundLayer);
@@ -133,8 +152,23 @@ public class PlayerInput : MonoBehaviour
 
         if (hit)
         {
+
+            slopeNormalPerp = Vector2.Perpendicular(hit.normal).normalized;
+
+            slopeDownAngle = Vector2.Angle(hit.normal, Vector2.up);
+
+            if (slopeDownAngle != slopeDownAngleOld)
+            {
+                isOnSlope = true;
+            }
+            else
+            {
+                isOnSlope = false;
+            }
+                slopeDownAngleOld = slopeDownAngle;
+
+            Debug.DrawRay(hit.point, slopeNormalPerp, Color.green);
             Debug.DrawRay(hit.point, hit.normal, Color.red);
-            Debug.Log("hit");
         }
     }
 
