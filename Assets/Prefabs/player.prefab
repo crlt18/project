@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 1422548994299935144}
   - component: {fileID: 524692677737115880}
   - component: {fileID: 2072737702223132348}
+  - component: {fileID: 167463645143642660}
   m_Layer: 0
   m_Name: player
   m_TagString: Untagged
@@ -199,14 +200,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 043547c4575266644a6c85268f01889d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseMovement: {fileID: 167463645143642660}
   originalSpeed: 10
   jumpForce: 35
-  groundCheckPoint: {fileID: 6290693757384880295}
-  groundCheckRadius: 0.1
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  slopeCheckDistance: 0.5
 --- !u!95 &2072737702223132348
 Animator:
   serializedVersion: 7
@@ -229,3 +225,24 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &167463645143642660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3862839623923725102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fdec3854eefb274babaea2f5540837f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  groundCheckPoint: {fileID: 6290693757384880295}
+  groundCheckRadius: 0.2
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  slopeCheckDistance: 0.1
+  slopeDownAngle: 0
+  slopeNormalPerp: {x: 0, y: 0}
+  isOnSlope: 0
