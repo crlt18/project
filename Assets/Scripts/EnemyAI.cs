@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -50,7 +51,7 @@ public class EnemyAI : MonoBehaviour
         switch (currentState)
         {
             case EnemyState.Patrol:
-                animator.SetBool("killPlayer", false);
+                animator.SetBool("attacking", false);
                 Patrol();
                 if (PlayerInSight())
                 {
@@ -63,7 +64,7 @@ public class EnemyAI : MonoBehaviour
                 break;
 
             case EnemyState.Attack:
-                animator.SetBool("killPlayer", true);
+                animator.SetBool("attacking", true);
                 AttackPlayer();
                 break;
         }
@@ -155,12 +156,19 @@ public class EnemyAI : MonoBehaviour
 
     private void ChasePlayer()
     {
+        StartCoroutine(Chasing());
+    }
+
+    private IEnumerator Chasing()
+    {
+        animator.SetBool("killPlayer", true);
+        yield return new WaitForSeconds(2f);
         Vector2 direction = (player.position - transform.position).normalized;
 
         rb.linearVelocity = new Vector2(direction.x * enemySpeed, rb.linearVelocity.y);
 
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-        if (distanceToPlayer < 1.5f) 
+        if (distanceToPlayer < 1.5f)
         {
             currentState = EnemyState.Attack;
         }
@@ -185,7 +193,7 @@ public class EnemyAI : MonoBehaviour
     public void ResetToPatrol()
     {
         currentState = EnemyState.Patrol;
-        animator.SetBool("killPlayer", false);
+        animator.SetBool("attacking", false);
         rb.linearVelocity = Vector2.zero;
     }
 
