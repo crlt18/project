@@ -17,9 +17,12 @@ public class EnemyAI : MonoBehaviour
     private Transform player;
 
     //patrol points
-    [SerializeField] private List<Transform> patrolPoints;
+    [SerializeField] private List<PatrolPoint> patrolPoints;
     [SerializeField] private float waypointDistance = 0.1f;
     private int currentPointIndex = 0;
+    private float pauseTimer = 0f;
+    private bool isWaiting = false;
+
 
     private void Awake()
     {
@@ -85,20 +88,38 @@ public class EnemyAI : MonoBehaviour
 
     private void Patrol()
     {
-        Transform targetPoint = patrolPoints[currentPointIndex];
-        Vector2 direction = (targetPoint.position - transform.position).normalized;
+        if (isWaiting)
+        {
+            pauseTimer -= Time.deltaTime;
+            if (pauseTimer <= 0f)
+            {
+                isWaiting = false;
+                currentPointIndex = (currentPointIndex + 1) % patrolPoints.Count;
+            }
+            else
+            {
+                //stop moving while waiting
+                rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+                return;
+            }
+        }
+
+        PatrolPoint currentPatrolPoint = patrolPoints[currentPointIndex];
+        Vector2 direction = (currentPatrolPoint.point.position - transform.position).normalized;
 
         rb.linearVelocity = new Vector2(direction.x * enemySpeed, rb.linearVelocity.y);
 
-        //flip sprite based on direction
+        // Flip sprite based on direction
         Vector3 localScale = transform.localScale;
         localScale.x = direction.x >= 0 ? -Mathf.Abs(localScale.x) : Mathf.Abs(localScale.x);
         transform.localScale = localScale;
 
-        if (Vector2.Distance(transform.position, targetPoint.position) < waypointDistance)
+        if (Vector2.Distance(transform.position, currentPatrolPoint.point.position) < waypointDistance)
         {
-            currentPointIndex = (currentPointIndex + 1) % patrolPoints.Count;
+            isWaiting = true;
+            pauseTimer = currentPatrolPoint.pauseTime;
         }
+
     }
 
 }
