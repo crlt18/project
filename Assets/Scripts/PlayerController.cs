@@ -5,7 +5,7 @@ using UnityEngine.Rendering;
 
 public class PlayerController : MonoBehaviour
 {
-
+    [SerializeField] private BaseMovement baseMovement;
     private float playerSpeed;
     [SerializeField] private float originalSpeed;
     private float currentSpeed;
@@ -19,17 +19,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 standingOffset;
     private Vector2 crouchingOffset;
 
-    [SerializeField] private Transform groundCheckPoint;
-    [SerializeField] private float groundCheckRadius = 0.2f;
-    [SerializeField] private LayerMask groundLayer;
     private Animator animator;
-
-    [SerializeField] private float slopeCheckDistance;
-    private float slopeDownAngle;
-    private float slopeDownAngleOld;
-    private float slopeSideAngle;
-    private Vector2 slopeNormalPerp;
-    private bool isOnSlope;
 
     private void Awake()
     {
@@ -66,7 +56,7 @@ public class PlayerController : MonoBehaviour
         //jump
         if (Input.GetKey(KeyCode.Space))
         {
-            if (IsGrounded())
+            if (baseMovement.IsGrounded())
             {
                 rb.linearVelocity = new Vector2(currentSpeed, jumpForce);
             }
@@ -83,7 +73,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //crouch
-        if (Input.GetKey(KeyCode.S) && IsGrounded())
+        if (Input.GetKey(KeyCode.S) && baseMovement.IsGrounded())
         {
             capsuleCollider.size = crouchingSize;
             capsuleCollider.offset = crouchingOffset;
@@ -94,7 +84,7 @@ public class PlayerController : MonoBehaviour
             capsuleCollider.offset = standingOffset;
         }
 
-        SlopeCheck();
+        baseMovement.SlopeCheck();
 
     }
 
@@ -113,15 +103,14 @@ public class PlayerController : MonoBehaviour
         }
         transform.localScale = localScale;
         animator.SetFloat("speed", Mathf.Abs(currentSpeed));
-        animator.SetBool("grounded", IsGrounded());
+        animator.SetBool("grounded", baseMovement.IsGrounded());
     }
 
     private void MovePlayer(float playerSpeed)
     {
-
-        if (IsGrounded() && isOnSlope)
+        if (baseMovement.IsGrounded() && baseMovement.isOnSlope)
         {
-            rb.linearVelocity = new Vector2(-playerSpeed * slopeNormalPerp.x , -playerSpeed * slopeNormalPerp.y);
+            rb.linearVelocity = new Vector2(-playerSpeed * baseMovement.slopeNormalPerp.x , -playerSpeed * baseMovement.slopeNormalPerp.y);
         }
         else
         {
@@ -130,66 +119,6 @@ public class PlayerController : MonoBehaviour
         
     }
 
-    private bool IsGrounded()
-    {
-        return Physics2D.OverlapCircle(groundCheckPoint.position, groundCheckRadius, groundLayer);
-    }
-
-    private void SlopeCheck()
-    {
-        Vector2 checkPos = groundCheckPoint.position;
-
-        SlopeCheckVertical(checkPos);
-        SlopeCheckHorizontal(checkPos);
-    }
-
-    private void SlopeCheckHorizontal(Vector2 checkPos)
-    {
-        RaycastHit2D slopeHitFront = Physics2D.Raycast(checkPos, transform.right, slopeCheckDistance, groundLayer);
-        RaycastHit2D slopeHitBack = Physics2D.Raycast(checkPos, -transform.right, slopeCheckDistance, groundLayer);
-
-        if(slopeHitFront)
-        {
-            isOnSlope = true;
-            slopeSideAngle = Vector2.Angle(slopeHitFront.normal, Vector2.up);
-        }
-        else if (slopeHitBack)
-        {
-            isOnSlope = true;
-            slopeSideAngle = Vector2.Angle(slopeHitFront.normal, Vector2.up);
-        }
-        else
-        {
-            slopeSideAngle = 0.0f;
-            isOnSlope= false;
-        }
-    }
-
-    private void SlopeCheckVertical(Vector2 checkPos)
-    {
-        RaycastHit2D hit = Physics2D.Raycast(checkPos, Vector2.down, slopeCheckDistance, groundLayer);
-
-        if (hit)
-        {
-
-            slopeNormalPerp = Vector2.Perpendicular(hit.normal).normalized;
-
-            slopeDownAngle = Vector2.Angle(hit.normal, Vector2.up);
-
-            if (slopeDownAngle != slopeDownAngleOld)
-            {
-                isOnSlope = true;
-            }
-            else
-            {
-                isOnSlope = false;
-            }
-                slopeDownAngleOld = slopeDownAngle;
-
-            Debug.DrawRay(hit.point, slopeNormalPerp, Color.green);
-            Debug.DrawRay(hit.point, hit.normal, Color.red);
-        }
-    }
 
 }
 
