@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
@@ -9,6 +8,10 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private LayerMask playerLayer;
     [SerializeField] private LayerMask obstacleLayer;   //ensure player cant be seen if hiding
     [SerializeField] private float enemySpeed;
+    private float currentSpeed;
+
+    [SerializeField] private BaseMovement baseMovement;
+    private Animator animator;
 
     private Rigidbody2D rb;
     private Transform player;
@@ -21,6 +24,7 @@ public class EnemyAI : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
 
         //flip enemy so that their vision is the right direction
         Vector3 localScale = transform.localScale;
@@ -38,16 +42,19 @@ public class EnemyAI : MonoBehaviour
         {
             Debug.Log("Player Dead");
         }
+        currentSpeed = rb.linearVelocityX;
+        animator.SetFloat("speed", Mathf.Abs(currentSpeed));
     }
 
     private bool PlayerInSight()
     {
+        Vector2 facingDirection = transform.localScale.x < 0 ? Vector2.right : Vector2.left;
         Vector2 directionToPlayer = (player.position - transform.position).normalized;
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
         if (distanceToPlayer < visionRange)
         {
-            float angleBetweenEnemyAndPlayer = Vector2.Angle(transform.right, directionToPlayer);
+            float angleBetweenEnemyAndPlayer = Vector2.Angle(facingDirection, directionToPlayer);
 
             if (angleBetweenEnemyAndPlayer < visionAngle / 2)
             {
@@ -66,8 +73,10 @@ public class EnemyAI : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, visionRange);
 
-        Vector3 leftBoundary = Quaternion.Euler(0, 0, visionAngle / 2) * transform.right;
-        Vector3 rightBoundary = Quaternion.Euler(0, 0, -visionAngle / 2) * transform.right;
+        Vector2 facingDirection = transform.localScale.x < 0 ? Vector2.right : Vector2.left;
+
+        Vector3 leftBoundary = Quaternion.Euler(0, 0, visionAngle / 2) * facingDirection;
+        Vector3 rightBoundary = Quaternion.Euler(0, 0, -visionAngle / 2) * facingDirection;
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawLine(transform.position, transform.position + leftBoundary * visionRange);
