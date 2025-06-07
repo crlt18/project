@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -5,6 +6,9 @@ using UnityEngine.Rendering;
 
 public class PlayerController : MonoBehaviour
 {
+
+    public static event System.Action OnPlayerDeath;
+
     [SerializeField] private BaseMovement baseMovement;
     private float playerSpeed;
     [SerializeField] private float originalSpeed;
@@ -22,6 +26,8 @@ public class PlayerController : MonoBehaviour
     private bool isSpotted = false;
 
     private Animator animator;
+
+    [SerializeField] EnemyAI enemyAI;
 
     private void Awake()
     {
@@ -127,6 +133,19 @@ public class PlayerController : MonoBehaviour
     {
         isSpotted = true;
         animator.SetBool("spotted", true);
+    }
+
+    public void Die()
+    {
+        StartCoroutine(Death());
+    }
+
+    private IEnumerator Death()
+    {
+        animator.SetBool("dead", true);
+        yield return new WaitForSeconds(2f);
+        OnPlayerDeath?.Invoke();
+        Destroy(gameObject);    
     }
 
 }

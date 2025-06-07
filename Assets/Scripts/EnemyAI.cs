@@ -42,9 +42,15 @@ public class EnemyAI : MonoBehaviour
 
     private void Update()
     {
+        if (player == null)
+        {
+            currentState = EnemyState.Patrol;
+            return;
+        }
         switch (currentState)
         {
             case EnemyState.Patrol:
+                animator.SetBool("killPlayer", false);
                 Patrol();
                 if (PlayerInSight())
                 {
@@ -57,6 +63,7 @@ public class EnemyAI : MonoBehaviour
                 break;
 
             case EnemyState.Attack:
+                animator.SetBool("killPlayer", true);
                 AttackPlayer();
                 break;
         }
@@ -67,6 +74,12 @@ public class EnemyAI : MonoBehaviour
 
     private bool PlayerInSight()
     {
+        if (player == null)
+        {
+            return false;
+        }
+
+
         Vector2 facingDirection = transform.localScale.x < 0 ? Vector2.right : Vector2.left;
         Vector2 directionToPlayer = (player.position - transform.position).normalized;
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
@@ -103,8 +116,9 @@ public class EnemyAI : MonoBehaviour
         Gizmos.DrawLine(transform.position, transform.position + rightBoundary * visionRange);
     }
 
-    private void Patrol()
+    public void Patrol()
     {
+        currentState = EnemyState.Patrol;
         if (isWaiting)
         {
             pauseTimer -= Time.deltaTime;
@@ -155,6 +169,24 @@ public class EnemyAI : MonoBehaviour
     private void AttackPlayer()
     {
         rb.linearVelocity = Vector2.zero;
-        animator.SetBool("killPlayer", true);
+        playerController.Die();
     }
+
+    private void OnEnable()
+    {
+        PlayerController.OnPlayerDeath += ResetToPatrol;
+    }
+
+    private void OnDisable()
+    {
+        PlayerController.OnPlayerDeath -= ResetToPatrol;
+    }
+
+    public void ResetToPatrol()
+    {
+        currentState = EnemyState.Patrol;
+        animator.SetBool("killPlayer", false);
+        rb.linearVelocity = Vector2.zero;
+    }
+
 }
