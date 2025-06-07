@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
     private Vector2 standingOffset;
     private Vector2 crouchingOffset;
 
+    private bool isSpotted = false;
+
     private Animator animator;
 
     private void Awake()
@@ -36,56 +38,58 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //movement
-        if (Input.GetKey(KeyCode.A))
+        if (!isSpotted)
         {
-            MovePlayer(-playerSpeed);
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            MovePlayer(playerSpeed);
-        }
-        else
-        {
-            //if there is no input reduce sliding from momentum
-            float friction = 10f;  
-            float newVelX = Mathf.MoveTowards(rb.linearVelocityX, 0, friction * Time.fixedDeltaTime);
-            rb.linearVelocity = new Vector2(newVelX, rb.linearVelocity.y);
-        }
-
-        //jump
-        if (Input.GetKey(KeyCode.Space))
-        {
-            if (baseMovement.IsGrounded())
+            //movement
+            if (Input.GetKey(KeyCode.A))
             {
-                rb.linearVelocity = new Vector2(currentSpeed, jumpForce);
+                MovePlayer(-playerSpeed);
             }
-        }
+            else if (Input.GetKey(KeyCode.D))
+            {
+                MovePlayer(playerSpeed);
+            }
+            else
+            {
+                //if there is no input reduce sliding from momentum
+                float friction = 10f;
+                float newVelX = Mathf.MoveTowards(rb.linearVelocityX, 0, friction * Time.fixedDeltaTime);
+                rb.linearVelocity = new Vector2(newVelX, rb.linearVelocity.y);
+            }
 
-        //sprint
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            playerSpeed = originalSpeed * 1.3f;
-        }
-        else
-        {
-            playerSpeed = originalSpeed;
-        }
+            //jump
+            if (Input.GetKey(KeyCode.Space))
+            {
+                if (baseMovement.IsGrounded())
+                {
+                    rb.linearVelocity = new Vector2(currentSpeed, jumpForce);
+                }
+            }
 
-        //crouch
-        if (Input.GetKey(KeyCode.S) && baseMovement.IsGrounded())
-        {
-            capsuleCollider.size = crouchingSize;
-            capsuleCollider.offset = crouchingOffset;
-        }
-        else
-        {
-            capsuleCollider.size = standingSize;
-            capsuleCollider.offset = standingOffset;
-        }
+            //sprint
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                playerSpeed = originalSpeed * 1.3f;
+            }
+            else
+            {
+                playerSpeed = originalSpeed;
+            }
 
-        baseMovement.SlopeCheck();
+            //crouch
+            if (Input.GetKey(KeyCode.S) && baseMovement.IsGrounded())
+            {
+                capsuleCollider.size = crouchingSize;
+                capsuleCollider.offset = crouchingOffset;
+            }
+            else
+            {
+                capsuleCollider.size = standingSize;
+                capsuleCollider.offset = standingOffset;
+            }
 
+            baseMovement.SlopeCheck();
+        }
     }
 
     private void Update()
@@ -119,6 +123,11 @@ public class PlayerController : MonoBehaviour
         
     }
 
+    public void Spotted()
+    {
+        isSpotted = true;
+        animator.SetBool("spotted", true);
+    }
 
 }
 

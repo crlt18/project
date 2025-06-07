@@ -11,6 +11,7 @@ public class EnemyAI : MonoBehaviour
     private float currentSpeed;
 
     [SerializeField] private BaseMovement baseMovement;
+    [SerializeField] private PlayerController playerController;
     private Animator animator;
 
     private Rigidbody2D rb;
@@ -23,6 +24,8 @@ public class EnemyAI : MonoBehaviour
     private float pauseTimer = 0f;
     private bool isWaiting = false;
 
+    private enum EnemyState { Patrol, Chase, Attack }
+    private EnemyState currentState = EnemyState.Patrol;
 
     private void Awake()
     {
@@ -39,12 +42,25 @@ public class EnemyAI : MonoBehaviour
 
     private void Update()
     {
-        Patrol();
-
-        if (PlayerInSight())
+        switch (currentState)
         {
-            Debug.Log("Player Dead");
+            case EnemyState.Patrol:
+                Patrol();
+                if (PlayerInSight())
+                {
+                    currentState = EnemyState.Chase;
+                }
+                break;
+
+            case EnemyState.Chase:
+                ChasePlayer();
+                break;
+
+            case EnemyState.Attack:
+                AttackPlayer();
+                break;
         }
+
         currentSpeed = rb.linearVelocityX;
         animator.SetFloat("speed", Mathf.Abs(currentSpeed));
     }
@@ -64,6 +80,7 @@ public class EnemyAI : MonoBehaviour
                 RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer, visionRange, obstacleLayer | playerLayer);
                 if (hit.collider != null && hit.collider.CompareTag("Player"))
                     {
+                        playerController.Spotted();
                         return true;
                     }
             }
@@ -109,7 +126,7 @@ public class EnemyAI : MonoBehaviour
 
         rb.linearVelocity = new Vector2(direction.x * enemySpeed, rb.linearVelocity.y);
 
-        // Flip sprite based on direction
+        //flip sprite based on direction
         Vector3 localScale = transform.localScale;
         localScale.x = direction.x >= 0 ? -Mathf.Abs(localScale.x) : Mathf.Abs(localScale.x);
         transform.localScale = localScale;
@@ -122,4 +139,22 @@ public class EnemyAI : MonoBehaviour
 
     }
 
+    private void ChasePlayer()
+    {
+        Vector2 direction = (player.position - transform.position).normalized;
+
+        rb.linearVelocity = new Vector2(direction.x * enemySpeed, rb.linearVelocity.y);
+
+        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+        if (distanceToPlayer < 1.5f) 
+        {
+            currentState = EnemyState.Attack;
+        }
+    }
+
+    private void AttackPlayer()
+    {
+        rb.linearVelocity = Vector2.zero;
+        animator.SetBool("killPlayer", true);
+    }
 }
