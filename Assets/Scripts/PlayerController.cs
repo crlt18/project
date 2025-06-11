@@ -63,15 +63,6 @@ public class PlayerController : MonoBehaviour
                 rb.linearVelocity = new Vector2(newVelX, rb.linearVelocity.y);
             }
 
-            //jump
-            if (Input.GetKey(KeyCode.Space))
-            {
-                if (baseMovement.IsGrounded())
-                {
-                    rb.linearVelocity = new Vector2(currentSpeed, jumpForce);
-                }
-            }
-
             //sprint
             if (Input.GetKey(KeyCode.LeftShift))
             {
@@ -80,12 +71,6 @@ public class PlayerController : MonoBehaviour
             else
             {
                 playerSpeed = originalSpeed;
-            }
-
-            //go down
-            if(Input.GetKey(KeyCode.S))
-            {
-                DropDown();
             }
 
             //crouch
@@ -120,6 +105,24 @@ public class PlayerController : MonoBehaviour
         transform.localScale = localScale;
         animator.SetFloat("speed", Mathf.Abs(currentSpeed));
         animator.SetBool("grounded", baseMovement.IsGrounded());
+
+        if (!isSpotted)
+        {
+            //jump
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                if (baseMovement.IsGrounded())
+                {
+                    rb.linearVelocity = new Vector2(currentSpeed, jumpForce);
+                }
+            }
+
+            //go down
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                DropDown();
+            }
+        }
     }
 
     private void MovePlayer(float playerSpeed)
