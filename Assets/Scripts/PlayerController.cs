@@ -82,8 +82,14 @@ public class PlayerController : MonoBehaviour
                 playerSpeed = originalSpeed;
             }
 
+            //go down
+            if(Input.GetKey(KeyCode.S))
+            {
+                DropDown();
+            }
+
             //crouch
-            if (Input.GetKey(KeyCode.S) && baseMovement.IsGrounded())
+            if (Input.GetKey(KeyCode.LeftControl) && baseMovement.IsGrounded())
             {
                 capsuleCollider.size = crouchingSize;
                 capsuleCollider.offset = crouchingOffset;
@@ -146,6 +152,20 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(2f);
         OnPlayerDeath?.Invoke();
         Destroy(gameObject);    
+    }
+
+    private void DropDown()
+    {
+        StartCoroutine(DropThroughPlatform());
+    }
+
+    private IEnumerator DropThroughPlatform()
+    {
+        gameObject.layer = LayerMask.NameToLayer("PlayerThroughPlatform");
+
+        yield return new WaitForSeconds(0.5f);
+
+        gameObject.layer = LayerMask.NameToLayer("Default");
     }
 
 }
