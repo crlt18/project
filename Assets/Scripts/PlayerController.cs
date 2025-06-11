@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpForce;
     private Rigidbody2D rb;
     private float deadZone = 0.05f; //prevent flickering (player changing direction for a frame when coming to a stop)
+    private bool jumpRequested = false;
 
     private CapsuleCollider2D capsuleCollider;
     private Vector2 standingSize;
@@ -61,6 +62,12 @@ public class PlayerController : MonoBehaviour
                 float friction = 10f;
                 float newVelX = Mathf.MoveTowards(rb.linearVelocityX, 0, friction * Time.fixedDeltaTime);
                 rb.linearVelocity = new Vector2(newVelX, rb.linearVelocity.y);
+            }
+
+            if (jumpRequested)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+                jumpRequested = false;
             }
 
             //sprint
@@ -109,12 +116,11 @@ public class PlayerController : MonoBehaviour
         if (!isSpotted)
         {
             //jump
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) && baseMovement.IsGrounded())
             {
-                if (baseMovement.IsGrounded())
-                {
-                    rb.linearVelocity = new Vector2(currentSpeed, jumpForce);
-                }
+
+                jumpRequested = true;
+   
             }
 
             //go down
