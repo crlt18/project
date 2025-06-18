@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private float deadZone = 0.05f; //prevent flickering (player changing direction for a frame when coming to a stop)
     private bool jumpRequested = false;
+    public bool canBackstab;
+    public GameObject enemyInRange;
 
     private CapsuleCollider2D capsuleCollider;
     private Vector2 standingSize;
@@ -127,6 +129,11 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.S))
             {
                 DropDown();
+            }
+
+            if (canBackstab && Input.GetMouseButtonDown(0))
+            {
+                Destroy(enemyInRange);
             }
         }
     }

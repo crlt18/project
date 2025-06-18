@@ -233,7 +233,7 @@ MonoBehaviour:
     m_Bits: 256
   enemySpeed: 0
   baseMovement: {fileID: 6763408839489825142}
-  playerController: {fileID: 0}
+  playerController: {fileID: 524692677737115880, guid: d9408000c5be0cd418c9c83380e37e11, type: 3}
   patrolPoints:
   - point: {fileID: 0}
     pauseTime: 0
@@ -257,9 +257,6 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  platformLayer:
-    serializedVersion: 2
-    m_Bits: 1024
   slopeCheckDistance: 0.1
   slopeDownAngle: 0
   slopeNormalPerp: {x: 0, y: 0}
@@ -411,3 +408,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdfa067d8da440a46938143273fc9f98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerController: {fileID: 524692677737115880, guid: d9408000c5be0cd418c9c83380e37e11, type: 3}

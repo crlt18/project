@@ -6,7 +6,6 @@ public class BaseMovement : MonoBehaviour
     [SerializeField] private Transform groundCheckPoint;
     [SerializeField] private float groundCheckRadius = 0.2f;
     [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private LayerMask platformLayer;
     [SerializeField] private float slopeCheckDistance;
     [HideInInspector] public float slopeDownAngle;
     [HideInInspector] public Vector2 slopeNormalPerp;
@@ -14,7 +13,7 @@ public class BaseMovement : MonoBehaviour
 
     public bool IsGrounded()
     {
-        return Physics2D.OverlapCircle(groundCheckPoint.position, groundCheckRadius, groundLayer | platformLayer);
+        return Physics2D.OverlapCircle(groundCheckPoint.position, groundCheckRadius, groundLayer);
     }
 
     public void SlopeCheck()

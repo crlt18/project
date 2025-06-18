@@ -4,6 +4,7 @@ public class BackstabTrigger : MonoBehaviour
 {
 
     public bool canBeBackstabbed { get; private set; }
+    [SerializeField] private PlayerController playerController;
 
     private void OnTriggerEnter2D(Collider2D col)
     {
@@ -11,6 +12,9 @@ public class BackstabTrigger : MonoBehaviour
         {
             canBeBackstabbed = true;
             GetComponent<SpriteRenderer>().enabled = true;
+            playerController.canBackstab = true;
+            GameObject parentObject = transform.parent.gameObject;
+            playerController.enemyInRange = parentObject;
         }
     }
 
@@ -20,6 +24,8 @@ public class BackstabTrigger : MonoBehaviour
         {
             canBeBackstabbed = false;
             GetComponent<SpriteRenderer>().enabled = false;
+            playerController.canBackstab = false;
+            playerController.enemyInRange = null;
         }
     }
 }
