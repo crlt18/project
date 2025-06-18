@@ -224,7 +224,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visionRange: 5
-  visionAngle: 90
+  visionAngle: 60
   playerLayer:
     serializedVersion: 2
     m_Bits: 128

@@ -17,8 +17,12 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private float deadZone = 0.05f; //prevent flickering (player changing direction for a frame when coming to a stop)
     private bool jumpRequested = false;
-    public bool canBackstab;
-    public GameObject enemyInRange;
+    [HideInInspector] public bool canBackstab;
+    [HideInInspector] public GameObject enemyInRange;
+
+    [SerializeField] private Transform ceilingCheckPoint; 
+    [SerializeField] private Vector2 ceilingCheckSize = new Vector2(0.9f, 0.1f); 
+    [SerializeField] private LayerMask ceilingLayerMask; 
 
     private CapsuleCollider2D capsuleCollider;
     private Vector2 standingSize;
@@ -27,10 +31,9 @@ public class PlayerController : MonoBehaviour
     private Vector2 crouchingOffset;
 
     private bool isSpotted = false;
+    private bool isCrouching = false;
 
     private Animator animator;
-
-    [SerializeField] EnemyAI enemyAI;
 
     private void Awake()
     {
@@ -87,11 +90,13 @@ public class PlayerController : MonoBehaviour
             {
                 capsuleCollider.size = crouchingSize;
                 capsuleCollider.offset = crouchingOffset;
+                isCrouching = true;
             }
-            else
+            else if (isCrouching & CanStandUp())
             {
                 capsuleCollider.size = standingSize;
                 capsuleCollider.offset = standingOffset;
+                isCrouching = false;
             }
 
             baseMovement.SlopeCheck();
@@ -184,5 +189,9 @@ public class PlayerController : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("Default");
     }
 
+    private bool CanStandUp()
+    {
+        return !Physics2D.OverlapBox(ceilingCheckPoint.position, ceilingCheckSize, 0f, ceilingLayerMask);
+    }
 }
 
