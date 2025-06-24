@@ -12,7 +12,7 @@ public class EnemyAI : MonoBehaviour
     private float currentSpeed;
 
     [SerializeField] private BaseMovement baseMovement;
-    [SerializeField] private PlayerController playerController;
+    private PlayerController playerController;
     private Animator animator;
 
     private Rigidbody2D rb;
@@ -38,7 +38,16 @@ public class EnemyAI : MonoBehaviour
         localScale.x = -Mathf.Abs(localScale.x);
         transform.localScale = localScale;
 
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null)
+        {
+            player = playerObj.transform;
+            playerController = playerObj.GetComponent<PlayerController>();
+        }
+        else
+        {
+            Debug.LogError("no GameObject with tag 'Player' found");
+        }
     }
 
     private void Update()
