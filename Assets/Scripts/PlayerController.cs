@@ -40,10 +40,6 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
         animator = GetComponent<Animator>();
-        if (animator != null)
-        {
-            Debug.Log("found animator");
-        }
         standingSize = capsuleCollider.size;
         standingOffset = capsuleCollider.offset;
 
