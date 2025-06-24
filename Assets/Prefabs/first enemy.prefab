@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 6446099856254952680}
   - component: {fileID: 2092728384172084448}
   - component: {fileID: 6763408839489825142}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: first enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -231,9 +231,9 @@ MonoBehaviour:
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 256
-  enemySpeed: 0
+  enemySpeed: 5
   baseMovement: {fileID: 6763408839489825142}
-  playerController: {fileID: 524692677737115880, guid: d9408000c5be0cd418c9c83380e37e11, type: 3}
+  playerController: {fileID: 0}
   patrolPoints:
   - point: {fileID: 0}
     pauseTime: 0
