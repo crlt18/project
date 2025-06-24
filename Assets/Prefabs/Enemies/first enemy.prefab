@@ -233,7 +233,6 @@ MonoBehaviour:
     m_Bits: 256
   enemySpeed: 5
   baseMovement: {fileID: 6763408839489825142}
-  playerController: {fileID: 524692677737115880, guid: d9408000c5be0cd418c9c83380e37e11, type: 3}
   patrolPoints:
   - point: {fileID: 0}
     pauseTime: 0
