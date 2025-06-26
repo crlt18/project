@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 1348793480980398472}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.01, y: -3.36, z: 0}
+  m_LocalPosition: {x: -0.065, y: -0.232, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 3344303458120776276}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.13, y: 3.12, z: 0}
+  m_LocalPosition: {x: -0.092, y: 0.202, z: 0}
   m_LocalScale: {x: 3.4142509, y: 3.4142509, z: 3.4142509}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -94,7 +94,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -5.39, y: 2.35, z: 0}
-  m_LocalScale: {x: 0.29289, y: 0.29289, z: 0.29289}
+  m_LocalScale: {x: 3.9706566, y: 3.9706566, z: 3.9706566}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6290693757384880295}
@@ -145,12 +145,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1382190251706310804, guid: 0353b18b68f9bda468bc2f42431eb6ef, type: 3}
+  m_Sprite: {fileID: 7627953520914446132, guid: ff11206318d4b33479cab1bc9ad23088, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 2}
+  m_Size: {x: 0.4375, y: 0.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -190,8 +190,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.784724, y: -0.030678004}
-  m_Size: {x: 2.5694475, y: 6.5957274}
+  m_Offset: {x: -0.05453705, y: -0.015296481}
+  m_Size: {x: 0.26950172, y: 0.46401826}
   m_Direction: 0
 --- !u!50 &1422548994299935144
 Rigidbody2D:
@@ -281,7 +281,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  slopeCheckDistance: 0.1
+  slopeCheckDistance: 0.4
   slopeDownAngle: 0
   slopeNormalPerp: {x: 0, y: 0}
   isOnSlope: 0
