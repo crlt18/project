@@ -1846,6 +1846,30 @@ PrefabInstance:
       propertyPath: patrolPoints.Array.data[0].point
       value: 
       objectReference: {fileID: 1384239664}
+    - target: {fileID: 4054534964989742207, guid: c45427b364024b64bbb8e8d00827aac2, type: 3}
+      propertyPath: sweepSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4054534964989742207, guid: c45427b364024b64bbb8e8d00827aac2, type: 3}
+      propertyPath: visionAngle
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4054534964989742207, guid: c45427b364024b64bbb8e8d00827aac2, type: 3}
+      propertyPath: visionRange
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 4054534964989742207, guid: c45427b364024b64bbb8e8d00827aac2, type: 3}
+      propertyPath: sweepBaseAngle
+      value: -150
+      objectReference: {fileID: 0}
+    - target: {fileID: 4054534964989742207, guid: c45427b364024b64bbb8e8d00827aac2, type: 3}
+      propertyPath: currentSweepAngle
+      value: -166.93
+      objectReference: {fileID: 0}
+    - target: {fileID: 4054534964989742207, guid: c45427b364024b64bbb8e8d00827aac2, type: 3}
+      propertyPath: useSweepingVision
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5679487876453875337, guid: c45427b364024b64bbb8e8d00827aac2, type: 3}
       propertyPath: playerController
       value: 
