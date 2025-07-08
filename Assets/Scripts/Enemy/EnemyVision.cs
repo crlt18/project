@@ -25,6 +25,7 @@ public class EnemyVision : MonoBehaviour
     private float sweepPauseTimer;
     private float sweepTime = 0f;
 
+
     private void Awake()
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
