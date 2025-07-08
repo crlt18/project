@@ -17,6 +17,14 @@ public class EnemyVision : MonoBehaviour
     [SerializeField] private float sweepBaseAngle;
     private float currentSweepAngle;
 
+    private bool pauseSweepingVision; //check if vision path should pause
+
+    [SerializeField] private bool usePauses; //whether the vision path will pause at specified intervals
+    [SerializeField] private float sweepPauseDuration; //duration of pause
+    [SerializeField] private float sweepPauseInterval; //time between each pause
+    private float sweepPauseTimer;
+    private float sweepTime = 0f;
+
     private void Awake()
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -35,8 +43,17 @@ public class EnemyVision : MonoBehaviour
     {
         if (useSweepingVision)
         {
-            float sweepOffset = Mathf.PingPong(Time.time * sweepSpeed, maxSweepOffset * 2f) - maxSweepOffset;
-            currentSweepAngle = sweepBaseAngle + sweepOffset;
+            if(usePauses)
+            {
+                HandlePauses();
+            }
+
+            if (!pauseSweepingVision)
+            {
+                sweepTime += Time.deltaTime;
+                float sweepOffset = Mathf.PingPong(sweepTime * sweepSpeed, maxSweepOffset * 2f) - maxSweepOffset;   //sweepTime used intstead of Time.time due to pauses in the sweeping vision
+                currentSweepAngle = sweepBaseAngle + sweepOffset;
+            }
         }
     }
 
@@ -48,10 +65,29 @@ public class EnemyVision : MonoBehaviour
         }
 
 
-        Vector2 facingDirection = useSweepingVision
-    ? new Vector2(Mathf.Cos(currentSweepAngle * Mathf.Deg2Rad), Mathf.Sin(currentSweepAngle * Mathf.Deg2Rad))
-    : (transform.localScale.x < 0 ? Vector2.right : Vector2.left);
-        Vector2 directionToPlayer = (player.position - transform.position).normalized;
+        Vector2 facingDirection;
+
+        if (useSweepingVision)
+        {
+            float angleInRadians = currentSweepAngle * Mathf.Deg2Rad;
+            facingDirection = new Vector2(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians));
+        }
+        else
+        {
+            if (transform.localScale.x < 0)
+            {
+                facingDirection = Vector2.right;
+            }
+            else
+            {
+                facingDirection = Vector2.left;
+            }
+        }
+
+        Vector2 directionToPlayer = player.position - transform.position;
+
+        directionToPlayer = directionToPlayer.normalized;
+
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
         if (distanceToPlayer < visionRange)
@@ -64,11 +100,28 @@ public class EnemyVision : MonoBehaviour
                 if (hit.collider != null && hit.collider.CompareTag("Player"))
                 {
                     playerController.Spotted();
+                    pauseSweepingVision = true;
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    private void HandlePauses()
+    {
+        sweepPauseTimer += Time.deltaTime;
+
+        if (!pauseSweepingVision && sweepPauseTimer >= sweepPauseInterval)
+        {
+            pauseSweepingVision = true;
+            sweepPauseTimer = 0f;
+        }
+        else if (pauseSweepingVision && sweepPauseTimer >= sweepPauseDuration)
+        {
+            pauseSweepingVision = false;
+            sweepPauseTimer = 0f;
+        }
     }
 
     private void OnDrawGizmos()
@@ -87,5 +140,4 @@ public class EnemyVision : MonoBehaviour
         Gizmos.DrawLine(transform.position, transform.position + leftBoundary * visionRange);
         Gizmos.DrawLine(transform.position, transform.position + rightBoundary * visionRange);
     }
-
 }
