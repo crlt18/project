@@ -43,6 +43,7 @@ public class EnemyVision : MonoBehaviour
             HandleVisionStopPoints();
         }
     }
+
     private void HandleVisionStopPoints()
     {
         VisionStopPoint currentStop = visionStopPoints[visionIndex];
@@ -90,8 +91,6 @@ public class EnemyVision : MonoBehaviour
         }
     }
 
-
-
     public bool PlayerInSight()
     {
         if (player == null)
@@ -126,7 +125,6 @@ public class EnemyVision : MonoBehaviour
         }
         return false;
     }
-
 
     private void OnDrawGizmos()
     {
