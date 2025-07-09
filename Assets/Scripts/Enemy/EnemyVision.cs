@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyVision : MonoBehaviour
@@ -11,20 +12,15 @@ public class EnemyVision : MonoBehaviour
     [SerializeField] private LayerMask playerLayer;
     [SerializeField] private LayerMask obstacleLayer;
 
-    [SerializeField] private bool useSweepingVision = false;
     [SerializeField] private float sweepSpeed = 60f;
-    [SerializeField] private float maxSweepOffset = 45f;
     [SerializeField] private float sweepBaseAngle;
     private float currentSweepAngle;
 
-    private bool pauseSweepingVision; //check if vision path should pause
-
-    [SerializeField] private bool usePauses; //whether the vision path will pause at specified intervals
-    [SerializeField] private float sweepPauseDuration; //duration of pause
-    [SerializeField] private float sweepPauseInterval; //time between each pause
-    private float sweepPauseTimer;
-    private float sweepTime = 0f;
-
+    [SerializeField] private List<VisionStopPoint> visionStopPoints;
+    private int visionIndex;
+    private bool isVisionWaiting = false;
+    private float visionPauseTimer = 0f;
+    private bool visionForward = true;
 
     private void Awake()
     {
@@ -42,21 +38,59 @@ public class EnemyVision : MonoBehaviour
 
     private void Update()
     {
-        if (useSweepingVision)
+        if (visionStopPoints.Count > 0)
         {
-            if(usePauses)
-            {
-                HandlePauses();
-            }
+            HandleVisionStopPoints();
+        }
+    }
+    private void HandleVisionStopPoints()
+    {
+        VisionStopPoint currentStop = visionStopPoints[visionIndex];
 
-            if (!pauseSweepingVision)
+       
+        Vector2 dir = (currentStop.point.position - transform.position).normalized;  //calculate target angle based on direction to the stop point
+        float targetAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+       
+        sweepBaseAngle = Mathf.LerpAngle(sweepBaseAngle, targetAngle, Time.deltaTime * sweepSpeed / 10f);    //smoothly rotate sweepBaseAngle toward the target
+        currentSweepAngle = sweepBaseAngle;
+
+        if (Mathf.Abs(Mathf.DeltaAngle(sweepBaseAngle, targetAngle)) < 1f && !isVisionWaiting)
+        {
+            isVisionWaiting = true;
+            visionPauseTimer = currentStop.pauseTime;
+        }
+
+        if (isVisionWaiting)
+        {
+            visionPauseTimer -= Time.deltaTime;
+            if (visionPauseTimer <= 0f)
             {
-                sweepTime += Time.deltaTime;
-                float sweepOffset = Mathf.PingPong(sweepTime * sweepSpeed, maxSweepOffset * 2f) - maxSweepOffset;   //sweepTime used intstead of Time.time due to pauses in the sweeping vision
-                currentSweepAngle = sweepBaseAngle + sweepOffset;
+                isVisionWaiting = false;
+                if (visionForward)
+                {
+                    visionIndex++;
+                    if (visionIndex >= visionStopPoints.Count)
+                    {
+                        visionIndex = visionStopPoints.Count - 2;
+                        visionForward = false;
+                    }
+                }
+                else
+                {
+                    visionIndex--;
+                    if (visionIndex < 0)
+                    {
+                        visionIndex = 1;
+                        visionForward = true;
+                    }
+                }
+
             }
         }
     }
+
+
 
     public bool PlayerInSight()
     {
@@ -65,25 +99,10 @@ public class EnemyVision : MonoBehaviour
             return false;
         }
 
-
         Vector2 facingDirection;
 
-        if (useSweepingVision)
-        {
-            float angleInRadians = currentSweepAngle * Mathf.Deg2Rad;
-            facingDirection = new Vector2(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians));
-        }
-        else
-        {
-            if (transform.localScale.x < 0)
-            {
-                facingDirection = Vector2.right;
-            }
-            else
-            {
-                facingDirection = Vector2.left;
-            }
-        }
+        float angleInRadians = currentSweepAngle * Mathf.Deg2Rad;
+        facingDirection = new Vector2(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians));
 
         Vector2 directionToPlayer = player.position - transform.position;
 
@@ -101,7 +120,6 @@ public class EnemyVision : MonoBehaviour
                 if (hit.collider != null && hit.collider.CompareTag("Player"))
                 {
                     playerController.Spotted();
-                    pauseSweepingVision = true;
                     return true;
                 }
             }
@@ -109,30 +127,13 @@ public class EnemyVision : MonoBehaviour
         return false;
     }
 
-    private void HandlePauses()
-    {
-        sweepPauseTimer += Time.deltaTime;
-
-        if (!pauseSweepingVision && sweepPauseTimer >= sweepPauseInterval)
-        {
-            pauseSweepingVision = true;
-            sweepPauseTimer = 0f;
-        }
-        else if (pauseSweepingVision && sweepPauseTimer >= sweepPauseDuration)
-        {
-            pauseSweepingVision = false;
-            sweepPauseTimer = 0f;
-        }
-    }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, visionRange);
 
-        Vector2 facingDirection = useSweepingVision
-    ? new Vector2(Mathf.Cos(currentSweepAngle * Mathf.Deg2Rad), Mathf.Sin(currentSweepAngle * Mathf.Deg2Rad))
-    : (transform.localScale.x < 0 ? Vector2.right : Vector2.left);
+        Vector2 facingDirection = new Vector2(Mathf.Cos(currentSweepAngle * Mathf.Deg2Rad), Mathf.Sin(currentSweepAngle * Mathf.Deg2Rad));
 
         Vector3 leftBoundary = Quaternion.Euler(0, 0, visionAngle / 2) * facingDirection;
         Vector3 rightBoundary = Quaternion.Euler(0, 0, -visionAngle / 2) * facingDirection;

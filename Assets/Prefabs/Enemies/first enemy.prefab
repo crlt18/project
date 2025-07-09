@@ -42,7 +42,6 @@ GameObject:
   - component: {fileID: 4089658853170554742}
   - component: {fileID: 8871068820718639327}
   - component: {fileID: 4967451979194951783}
-  - component: {fileID: 7532881168464583275}
   m_Layer: 12
   m_Name: Torch
   m_TagString: Untagged
@@ -118,21 +117,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7532881168464583275
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4278310276315343168}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 125e9a98895150844be3a7f801133d6a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  visionRange: 5
-  visionAngle: 90
-  segments: 30
 --- !u!1 &5830549617642189582
 GameObject:
   m_ObjectHideFlags: 0
@@ -389,9 +373,6 @@ MonoBehaviour:
   usePauses: 0
   sweepPauseDuration: 0
   sweepPauseInterval: 0
-  visionConeMaterial: {fileID: 0}
-  torchVisual: {fileID: 0}
-  coneMesh: {fileID: 0}
 --- !u!1 &6814206034501301557
 GameObject:
   m_ObjectHideFlags: 0
