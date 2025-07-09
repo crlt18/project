@@ -1230,15 +1230,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7743189293209432387, guid: 42800c4aabb48ff49ad744272a41526e, type: 3}
       propertyPath: m_BackGroundColor.b
-      value: 0.25254822
+      value: 0.13101639
       objectReference: {fileID: 0}
     - target: {fileID: 7743189293209432387, guid: 42800c4aabb48ff49ad744272a41526e, type: 3}
       propertyPath: m_BackGroundColor.g
-      value: 0.26415092
+      value: 0.13207549
       objectReference: {fileID: 0}
     - target: {fileID: 7743189293209432387, guid: 42800c4aabb48ff49ad744272a41526e, type: 3}
       propertyPath: m_BackGroundColor.r
-      value: 0.14328942
+      value: 0.12148453
       objectReference: {fileID: 0}
     - target: {fileID: 7891194623126435729, guid: 42800c4aabb48ff49ad744272a41526e, type: 3}
       propertyPath: m_Enabled
