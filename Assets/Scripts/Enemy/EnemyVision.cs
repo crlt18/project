@@ -112,10 +112,18 @@ public class EnemyVision : MonoBehaviour
 
         Vector2 facingDirection;
 
-        float angleInRadians = currentSweepAngle * Mathf.Deg2Rad;
-        facingDirection = new Vector2(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians));
+        if (visionStopPoints.Count > 0) 
+        {
+            float angleInRadians = currentSweepAngle * Mathf.Deg2Rad;
+            facingDirection = new Vector2(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians));
+        }
+        else
+        {
+            facingDirection = (transform.localScale.x < 0) ? Vector2.right : Vector2.left;
+        }
 
         Vector2 directionToPlayer = player.position - transform.position;
+
 
         directionToPlayer = directionToPlayer.normalized;
 
@@ -143,7 +151,15 @@ public class EnemyVision : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, visionRange);
 
-        Vector2 facingDirection = new Vector2(Mathf.Cos(currentSweepAngle * Mathf.Deg2Rad), Mathf.Sin(currentSweepAngle * Mathf.Deg2Rad));
+        Vector2 facingDirection;
+        if (visionStopPoints != null && visionStopPoints.Count > 0)
+        {
+            facingDirection = new Vector2(Mathf.Cos(currentSweepAngle * Mathf.Deg2Rad), Mathf.Sin(currentSweepAngle * Mathf.Deg2Rad));
+        }
+        else
+        {
+            facingDirection = (transform.localScale.x < 0) ? Vector2.right : Vector2.left;
+        }
 
         Vector3 leftBoundary = Quaternion.Euler(0, 0, visionAngle / 2) * facingDirection;
         Vector3 rightBoundary = Quaternion.Euler(0, 0, -visionAngle / 2) * facingDirection;
