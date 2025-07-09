@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class EnemyVision : MonoBehaviour
 {
@@ -22,6 +23,8 @@ public class EnemyVision : MonoBehaviour
     private float visionPauseTimer = 0f;
     private bool visionForward = true;
 
+    [SerializeField] private Light2D visionLight;
+
     private void Awake()
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -42,6 +45,15 @@ public class EnemyVision : MonoBehaviour
         {
             HandleVisionStopPoints();
         }
+
+        if (visionLight != null)
+        {
+            visionLight.pointLightInnerAngle = visionAngle * 0.8f;
+            visionLight.pointLightOuterAngle = visionAngle;
+            visionLight.pointLightOuterRadius = visionRange;
+            visionLight.transform.rotation = Quaternion.Euler(0, 0, currentSweepAngle - 90f);
+        }
+
     }
 
     private void HandleVisionStopPoints()
