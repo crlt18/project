@@ -135,7 +135,7 @@ public class EnemyVision : MonoBehaviour
 
             if (angleBetweenEnemyAndPlayer < visionAngle / 2)
             {
-                RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer, visionRange, obstacleLayer | playerLayer);
+                RaycastHit2D hit = Physics2D.Raycast((transform.position + new Vector3(0,0.5f,0)), directionToPlayer, visionRange, obstacleLayer | playerLayer);
                 if (hit.collider != null && hit.collider.CompareTag("Player"))
                 {
                     playerController.Spotted();
@@ -151,21 +151,33 @@ public class EnemyVision : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, visionRange);
 
-        Vector2 facingDirection;
+        Vector2 origin = (Vector2)(transform.position + new Vector3(0, 0.5f, 0));
+
+        float centerAngle;
         if (visionStopPoints != null && visionStopPoints.Count > 0)
         {
-            facingDirection = new Vector2(Mathf.Cos(currentSweepAngle * Mathf.Deg2Rad), Mathf.Sin(currentSweepAngle * Mathf.Deg2Rad));
+            centerAngle = currentSweepAngle;
         }
         else
         {
-            facingDirection = (transform.localScale.x < 0) ? Vector2.right : Vector2.left;
+            centerAngle = (transform.localScale.x < 0) ? 0f : 180f;
         }
 
-        Vector3 leftBoundary = Quaternion.Euler(0, 0, visionAngle / 2) * facingDirection;
-        Vector3 rightBoundary = Quaternion.Euler(0, 0, -visionAngle / 2) * facingDirection;
+        float halfVision = visionAngle / 2f;
+
+        Vector2 leftDir = new Vector2(Mathf.Cos((centerAngle + halfVision) * Mathf.Deg2Rad),
+                                      Mathf.Sin((centerAngle + halfVision) * Mathf.Deg2Rad));
+
+        Vector2 rightDir = new Vector2(Mathf.Cos((centerAngle - halfVision) * Mathf.Deg2Rad),
+                                       Mathf.Sin((centerAngle - halfVision) * Mathf.Deg2Rad));
 
         Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(transform.position, transform.position + leftBoundary * visionRange);
-        Gizmos.DrawLine(transform.position, transform.position + rightBoundary * visionRange);
+        Gizmos.DrawLine((Vector3)origin, (Vector3)(origin + leftDir * visionRange));
+        Gizmos.DrawLine((Vector3)origin, (Vector3)(origin + rightDir * visionRange));
+
+        Vector2 centerDir = new Vector2(Mathf.Cos(centerAngle * Mathf.Deg2Rad), Mathf.Sin(centerAngle * Mathf.Deg2Rad));
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine((Vector3)origin, (Vector3)(origin + centerDir * visionRange));
     }
+
 }
