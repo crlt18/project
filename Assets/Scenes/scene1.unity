@@ -857,6 +857,10 @@ PrefabInstance:
       propertyPath: patrolPoints.Array.data[1].point
       value: 
       objectReference: {fileID: 923999378}
+    - target: {fileID: 4054534964989742207, guid: c45427b364024b64bbb8e8d00827aac2, type: 3}
+      propertyPath: visionAngle
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 5679487876453875337, guid: c45427b364024b64bbb8e8d00827aac2, type: 3}
       propertyPath: playerController
       value: 
@@ -965,6 +969,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 524692677737115880, guid: d9408000c5be0cd418c9c83380e37e11, type: 3}
+      propertyPath: jumpForce
+      value: 35
+      objectReference: {fileID: 0}
     - target: {fileID: 3862839623923725102, guid: d9408000c5be0cd418c9c83380e37e11, type: 3}
       propertyPath: m_Name
       value: player

@@ -24,6 +24,8 @@ public class EnemyAI : MonoBehaviour
     private int currentPointIndex = 0;
     private float pauseTimer = 0f;
     private bool isWaiting = false;
+    private bool isChasing = false;
+
 
     private enum EnemyState { Patrol, Chase, Attack }
     private EnemyState currentState = EnemyState.Patrol;
@@ -33,11 +35,6 @@ public class EnemyAI : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         enemyVision = GetComponent<EnemyVision>();
-
-        //flip enemy so that their vision is the right direction
-        Vector3 localScale = transform.localScale;
-        localScale.x = -Mathf.Abs(localScale.x);
-        transform.localScale = localScale;
 
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
@@ -74,6 +71,7 @@ public class EnemyAI : MonoBehaviour
                 break;
 
             case EnemyState.Attack:
+                animator.SetBool("runToPlayer", false);
                 animator.SetBool("attacking", true);
                 AttackPlayer();
                 break;
@@ -122,14 +120,21 @@ public class EnemyAI : MonoBehaviour
 
     private void ChasePlayer()
     {
-        StartCoroutine(Chasing());
+        if (!isChasing)
+        {
+            StartCoroutine(Chasing());
+        }
     }
+
 
     private IEnumerator Chasing()
     {
+        isChasing = true;
         animator.SetBool("killPlayer", true);
         yield return new WaitForSeconds(2f);
         Vector2 direction = (player.position - transform.position).normalized;
+        animator.SetBool("runToPlayer", true);
+        animator.SetBool("killPlayer", false);
 
         rb.linearVelocity = new Vector2(direction.x * enemySpeed, rb.linearVelocity.y);
 
@@ -137,6 +142,10 @@ public class EnemyAI : MonoBehaviour
         if (distanceToPlayer < 1.5f)
         {
             currentState = EnemyState.Attack;
+        }
+        if (currentState == EnemyState.Patrol)
+        {
+            isChasing = false;
         }
     }
 

@@ -1,1 +1,2 @@
-player character: https://pushplayart.itch.io/hero-sprite-animation-2d-assets/download/eyJleHBpcmVzIjoxNzQ5MDUyNTc5LCJpZCI6OTI4Mjk5fQ%3d%3d.LNGbF5KkXM5%2bOEcaiC3iplQe6GE%3d
+player character: https://orizho.itch.io/bushido-main-character-pack
+enemies: https://orizho.itch.io/bushido-enemies/download/eyJpZCI6MTg4NzI5NSwiZXhwaXJlcyI6MTc1Mjg2NzA4Mn0%3d.QLrjVso7i4A5u3zdSgy0gMP3tig%3d
