@@ -132,21 +132,25 @@ public class EnemyAI : MonoBehaviour
         isChasing = true;
         animator.SetBool("killPlayer", true);
         yield return new WaitForSeconds(2f);
-        Vector2 direction = (player.position - transform.position).normalized;
         animator.SetBool("runToPlayer", true);
         animator.SetBool("killPlayer", false);
 
-        rb.linearVelocity = new Vector2(direction.x * enemySpeed, rb.linearVelocity.y);
+        while (currentState == EnemyState.Chase)
+        {
+            Vector2 direction = (player.position - transform.position).normalized;
+            rb.linearVelocity = new Vector2(direction.x * enemySpeed, rb.linearVelocity.y);
 
-        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-        if (distanceToPlayer < 1.5f)
-        {
-            currentState = EnemyState.Attack;
+            float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+            if (distanceToPlayer < 1.5f)
+            {
+                currentState = EnemyState.Attack;
+            }
+
+            yield return null;
         }
-        if (currentState == EnemyState.Patrol)
-        {
-            isChasing = false;
-        }
+        // Once chase ends
+        animator.SetBool("runToPlayer", false);
+        isChasing = false;
     }
 
     private void AttackPlayer()
